@@ -1,4 +1,4 @@
-package com.baraa.software.eventhorizon.viewmodel_1;
+package com.baraa.software.eventhorizon.viewmodel_1.movie;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -14,6 +14,9 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.baraa.software.eventhorizon.viewmodel_1.R;
+import com.baraa.software.eventhorizon.viewmodel_1.details.DetailViewModel;
+import com.baraa.software.eventhorizon.viewmodel_1.details.DetailsFragment;
 import com.baraa.software.eventhorizon.viewmodel_1.model.MovieItem;
 
 import java.util.ArrayList;
@@ -24,7 +27,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public class MovieFragment extends Fragment {
+public class MovieFragment extends Fragment implements MovieRecyclerViewAdapter.MovieListListener {
     private static final String TAG = "MovieFragment";
     @BindView(R.id.recyclerView) RecyclerView recyclerView;
     @BindView(R.id.progressbar) ProgressBar progressBar;
@@ -64,10 +67,20 @@ public class MovieFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
         adapter = new MovieRecyclerViewAdapter(movies);
+        adapter.setMovieListListener(this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
         obseverViewModel();
+    }
+
+    @Override
+    public void onMovieSelected(MovieItem movieItem) {
+        DetailViewModel detailViewModel =ViewModelProviders.of(getActivity()).get(DetailViewModel.class);
+        detailViewModel.setMovieItem(movieItem);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frameLayout, DetailsFragment.newInstance(null,null))
+                .commit();
     }
 
     public void obseverViewModel(){
@@ -99,4 +112,5 @@ public class MovieFragment extends Fragment {
             unbinder = null;
         }
     }
+
 }

@@ -1,4 +1,4 @@
-package com.baraa.software.eventhorizon.viewmodel_1;
+package com.baraa.software.eventhorizon.viewmodel_1.movie;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;

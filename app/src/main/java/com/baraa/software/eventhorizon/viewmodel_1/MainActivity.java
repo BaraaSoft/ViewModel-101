@@ -3,6 +3,9 @@ package com.baraa.software.eventhorizon.viewmodel_1;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.baraa.software.eventhorizon.viewmodel_1.R;
+import com.baraa.software.eventhorizon.viewmodel_1.movie.MovieFragment;
+
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
