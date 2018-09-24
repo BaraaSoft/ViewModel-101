@@ -1,7 +1,11 @@
 package com.baraa.software.eventhorizon.viewmodel_1.details;
 
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +14,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.baraa.software.eventhorizon.viewmodel_1.R;
+import com.baraa.software.eventhorizon.viewmodel_1.model.MovieItem;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
@@ -29,6 +36,7 @@ public class DetailsFragment extends Fragment {
     @BindView(R.id.tvTitle) TextView tvTitle;
     @BindView(R.id.imageView) ImageView imageView;
 
+    DetailViewModel detailViewModel;
 
     public DetailsFragment() {
         // Required empty public constructor
@@ -56,9 +64,33 @@ public class DetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_details, container, false);
+        unbinder = ButterKnife.bind(this,view);
+
+        detailViewModel = ViewModelProviders.of(getActivity()).get(DetailViewModel.class);
 
         return view;
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        observeViewModel();
+    }
+
+    public void observeViewModel(){
+        detailViewModel.getMovieItem().observe(this, new Observer<MovieItem>() {
+            @Override
+            public void onChanged(@Nullable MovieItem movieItem) {
+                tvTitle.setText(movieItem.getTitle());
+                tvOverview.setText(movieItem.getOverview());
+                tvReleaseDate.setText(movieItem.getReleaseDate());
+
+                Picasso.get().load(movieItem.getPosterPath()).into(imageView);
+            }
+        });
+    }
+
+
 
     @Override
     public void onDestroyView() {
