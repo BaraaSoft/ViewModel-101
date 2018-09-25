@@ -3,6 +3,7 @@ package com.baraa.software.eventhorizon.viewmodel_1.details;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,7 +16,11 @@ import android.widget.TextView;
 
 import com.baraa.software.eventhorizon.viewmodel_1.R;
 import com.baraa.software.eventhorizon.viewmodel_1.model.MovieItem;
+import com.baraa.software.eventhorizon.viewmodel_1.root.App;
+import com.baraa.software.eventhorizon.viewmodel_1.root.viewmodule.ViewModelFactory;
 import com.squareup.picasso.Picasso;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,6 +34,9 @@ public class DetailsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    @Inject
+    ViewModelFactory viewModelFactory;
 
     Unbinder unbinder;
     @BindView(R.id.tvOverview) TextView tvOverview;
@@ -52,6 +60,12 @@ public class DetailsFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        App.getApplicationComponent(context).inject(this);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -66,7 +80,7 @@ public class DetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_details, container, false);
         unbinder = ButterKnife.bind(this,view);
 
-        detailViewModel = ViewModelProviders.of(getActivity()).get(DetailViewModel.class);
+        detailViewModel = ViewModelProviders.of(getActivity(),viewModelFactory).get(DetailViewModel.class);
 
         return view;
     }

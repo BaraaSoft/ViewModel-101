@@ -1,6 +1,7 @@
 package com.baraa.software.eventhorizon.viewmodel_1.root;
 
 import android.app.Application;
+import android.content.Context;
 
 public class App extends Application {
     ApplicationComponent component;
@@ -11,7 +12,8 @@ public class App extends Application {
         component = DaggerApplicationComponent.create();
     }
 
-    public ApplicationComponent getApplicationComponent() {
-        return component;
+    public static ApplicationComponent getApplicationComponent(Context context) {
+
+        return ((App) context.getApplicationContext()).component;
     }
 }

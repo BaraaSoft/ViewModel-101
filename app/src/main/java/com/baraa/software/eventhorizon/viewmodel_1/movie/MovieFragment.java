@@ -1,6 +1,7 @@
 package com.baraa.software.eventhorizon.viewmodel_1.movie;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,9 +19,13 @@ import com.baraa.software.eventhorizon.viewmodel_1.R;
 import com.baraa.software.eventhorizon.viewmodel_1.details.DetailViewModel;
 import com.baraa.software.eventhorizon.viewmodel_1.details.DetailsFragment;
 import com.baraa.software.eventhorizon.viewmodel_1.model.MovieItem;
+import com.baraa.software.eventhorizon.viewmodel_1.root.App;
+import com.baraa.software.eventhorizon.viewmodel_1.root.viewmodule.ViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,6 +36,9 @@ public class MovieFragment extends Fragment implements MovieRecyclerViewAdapter.
     private static final String TAG = "MovieFragment";
     @BindView(R.id.recyclerView) RecyclerView recyclerView;
     @BindView(R.id.progressbar) ProgressBar progressBar;
+
+    @Inject
+    ViewModelFactory viewModelFactory;
 
     Unbinder unbinder;
     MovieViewModel viewModel;
@@ -46,6 +54,12 @@ public class MovieFragment extends Fragment implements MovieRecyclerViewAdapter.
     public static MovieFragment newInstance() {
         MovieFragment fragment = new MovieFragment();
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        App.getApplicationComponent(context).inject(this);
     }
 
     @Override
@@ -65,7 +79,7 @@ public class MovieFragment extends Fragment implements MovieRecyclerViewAdapter.
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
+        viewModel = ViewModelProviders.of(this,viewModelFactory).get(MovieViewModel.class);
         adapter = new MovieRecyclerViewAdapter(movies);
         adapter.setMovieListListener(this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -76,7 +90,7 @@ public class MovieFragment extends Fragment implements MovieRecyclerViewAdapter.
 
     @Override
     public void onMovieSelected(MovieItem movieItem) {
-        DetailViewModel detailViewModel =ViewModelProviders.of(getActivity()).get(DetailViewModel.class);
+        DetailViewModel detailViewModel =ViewModelProviders.of(getActivity(),viewModelFactory).get(DetailViewModel.class);
         detailViewModel.setMovieItem(movieItem);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frameLayout, DetailsFragment.newInstance(null,null))

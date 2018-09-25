@@ -11,6 +11,8 @@ import com.baraa.software.eventhorizon.viewmodel_1.networking.MovieApiModule;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,6 +30,7 @@ public class MovieViewModel extends ViewModel {
 
     private Call<ResponseNowPlaying> apiCall;
 
+    @Inject
     public MovieViewModel() {
 
         loadData(1);
