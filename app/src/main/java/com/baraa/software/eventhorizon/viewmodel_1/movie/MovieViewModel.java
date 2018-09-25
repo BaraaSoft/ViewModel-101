@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.baraa.software.eventhorizon.viewmodel_1.model.MovieItem;
 import com.baraa.software.eventhorizon.viewmodel_1.model.ResponseNowPlaying;
-import com.baraa.software.eventhorizon.viewmodel_1.networking.MovieApiModule;
+import com.baraa.software.eventhorizon.viewmodel_1.networking.IMovieApiService;
 
 import java.util.List;
 
@@ -26,20 +26,20 @@ public class MovieViewModel extends ViewModel {
     // List of recent movies fetched online
     MutableLiveData<List<MovieItem>> moviesList = new MutableLiveData<>();
     // use retrofit for making GET request to rest api
-    private MovieApiModule movieApi = new MovieApiModule();
+    private IMovieApiService apiService;
 
     private Call<ResponseNowPlaying> apiCall;
 
     @Inject
-    public MovieViewModel() {
-
+    public MovieViewModel(IMovieApiService movieApiService) {
+        this.apiService = movieApiService;
         loadData(1);
     }
 
     public void loadData(int numPage){
         isLoading.setValue(true);
         error.setValue(false);
-        apiCall = movieApi.providesMovieApiSevice().getNowPlaying(numPage);
+        apiCall = apiService.getNowPlaying(numPage);
 
         // Making GET request to rest api service using retrofit
         apiCall.enqueue(new Callback<ResponseNowPlaying>() {
